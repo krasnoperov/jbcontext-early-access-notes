@@ -61,13 +61,6 @@ A/B measurement of Context.
 
 ## `jbcontext analyze`
 
-The analyzer was run against two local Codex histories:
-
-| Dataset | Tasks | Exploration share | Exploration per task | Projected token reduction | Projected tool-call reduction | Projected cost/turn reduction |
-|---|---:|---:|---:|---:|---:|---:|
-| Primary development host | 1,298 | 5% | ~9 s | ~20% | ~13% | ~13% |
-| macOS test host | 134 | 14.09% | 109.9 s | 21.24% | 13.45% | 14.16% |
-
 Running the analyzer from three different repositories on the primary host
 returned the same result. The current working directory does not limit the
 dataset, and the tested CLI has no repository filter for Codex history.
@@ -97,6 +90,14 @@ the CLI.
 This is materially different from tools that keep embeddings and the vector
 database entirely on-device. A local-index mode and transparent telemetry
 controls would make Context easier to adopt for private repositories.
+
+## Drawbacks
+
+I did not understand the scope of `jbcontext analyze` immediately. Running it
+inside a repository made the report look repository-specific, and the projected
+reductions initially looked like measured local savings. Only after repeating
+the command from several repositories did it become clear that it scans the
+available agent history globally and models the effect instead.
 
 ## Conclusion
 
