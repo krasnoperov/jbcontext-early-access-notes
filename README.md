@@ -125,9 +125,59 @@ A sanitized review of 35 recent coding sessions found:
   17 at the 75th percentile and 30 at the 90th;
 - only 7 initial prompts already named a file or path.
 
-This suggests an opportunity to reduce the first several blind searches. It
-does not imply that Context can replace tests, exact usage checks, local
-verification, or reading the implementation.
+The `rg` count alone overstates the opportunity. Classifying the initial prompt
+and early tool sequence produced a more useful split:
+
+- 13 sessions were strong Context candidates because the implementation
+  location or subsystem was unknown;
+- 8 were conditional candidates where one discovery query might have helped
+  before switching to exact search;
+- 14 were poor candidates because the prompt already contained an error,
+  symbol, file, or line, or because the task primarily concerned GitHub, CI,
+  issue tracking, or another external system.
+
+This classification is a manual counterfactual judgment, not an automatic
+benchmark. It suggests an opportunity to reduce some blind searches, but not
+that every search-heavy session would benefit from Context. Exact usage checks,
+tests, local verification, and reading the implementation remain necessary.
+
+## Historical prompt replay
+
+Five of the strong-fit sessions were partially replayed against the indexed
+repositories. Each replay used one focused semantic query derived from the
+original task, without supplying the historical target filename:
+
+| Historical task shape | Search outcome |
+|---|---|
+| A header visible in one mode but missing in another | The route component was result 1 |
+| A capture reported as screen unavailable | The policy test and implementation were results 1 and 2 |
+| Immutable deployment of hashed frontend assets | The architecture contract was result 1 |
+| Adding another external video provider | The main generation executor was result 1 |
+| Highlighting a quoted phrase in a tutor response | The relevant test and implementation were results 1 and 2 |
+
+All five searches reached the historically relevant subsystem within the first
+three results. In three cases the implementation or architecture contract was
+the first result; in two cases a directly relevant test ranked first and the
+implementation ranked second.
+
+This is stronger local evidence than a projected savings estimate, but it is
+still not an end-to-end A/B test. The tasks were not executed to completion
+twice, so the replay does not establish token, cost, or elapsed-time savings.
+One search also returned a script path that was no longer present in the live
+working tree, reinforcing that the revision-bound index can lag local changes.
+
+## Code search is not session memory
+
+In the first 12 tool calls of 32 of the 35 reviewed sessions, Codex accessed its
+local memory or prior rollout files. That is a separate retrieval problem:
+Context can locate code by meaning, but it does not recover earlier decisions,
+investigation results, or operational history.
+
+QMD could be evaluated for that role, but it was not a tested solution here.
+At the time of this review, the local QMD `sessions` collection contained
+exported Claude Code sessions rather than Codex sessions. Codex history would
+first need a reliable export and ingestion path, followed by its own retrieval
+test. No QMD performance claim should be inferred from this report.
 
 ## The misleading part of `jbcontext analyze`
 
